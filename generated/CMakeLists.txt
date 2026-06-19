@@ -1,0 +1,33 @@
+include(FetchContent)
+FetchContent_Declare(misolib
+    GIT_REPOSITORY https://gitlab.com/minimize-solve/misolib.git
+    GIT_TAG main
+)
+FetchContent_MakeAvailable(misolib)
+
+if(NOT TARGET miso)
+    add_library(miso)
+    add_library(miso::miso ALIAS miso)
+    target_compile_features(miso PRIVATE cxx_std_23)
+    target_link_libraries(miso PUBLIC misolib::misolib)
+endif()
+
+add_subdirectory(P1TriCGV)
+add_subdirectory(P2TriVal)
+add_subdirectory(P2TriCGV)
+add_subdirectory(P3TriVal)
+add_subdirectory(P3TriCGV)
+add_subdirectory(P4TriVal)
+add_subdirectory(P4TriCGV)
+add_subdirectory(P1TetCGV)
+add_subdirectory(P2TetVal)
+add_subdirectory(P2TetCGV)
+add_subdirectory(P3TetVal)
+add_subdirectory(P3TetCGV)
+target_sources(miso PRIVATE JacEval_P1Tri.cpp)
+target_sources(miso PRIVATE JacEval_P2Tri.cpp)
+target_sources(miso PRIVATE JacEval_P3Tri.cpp)
+target_sources(miso PRIVATE JacEval_P4Tri.cpp)
+target_sources(miso PRIVATE JacEval_P1Tet.cpp)
+target_sources(miso PRIVATE JacEval_P2Tet.cpp)
+target_sources(miso PRIVATE JacEval_P3Tet.cpp)
