@@ -8,21 +8,25 @@ Produces two classes per (D, P) pair:
                              and robust_evaluate_jacobian)
 
 Run:
-    python generate.py   (no venv needed if local pymiso is used)
+    python generate.py
 """
 import os
 import sys
 import shutil
-
-# Must be set before sympy is imported — 1000 (default) is too small for the
-# number of unique symbols created across all generate() calls, causing LRU
-# eviction of domain variables (e.g. 't') and silent identity mismatches.
-os.environ.setdefault('SYMPY_CACHE_SIZE', '5000')
+import subprocess
 
 from sympy import Matrix, symbols
 
-# Use local pymiso (cloned into ignore/pymiso) in preference to any installed version
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ignore', 'pymiso'))
+# Clone pymiso from GitLab into ignore/pymiso if not already present
+_HERE = os.path.dirname(os.path.abspath(__file__))
+_PYMISO_DIR = os.path.join(_HERE, 'ignore', 'pymiso')
+_PYMISO_URL = 'https://gitlab.com/minimize-solve/pymiso.git'
+
+if not os.path.isdir(_PYMISO_DIR):
+    os.makedirs(os.path.join(_HERE, 'ignore'), exist_ok=True)
+    subprocess.run(['git', 'clone', _PYMISO_URL, _PYMISO_DIR], check=True)
+
+sys.path.insert(0, _PYMISO_DIR)
 from miso import Domain, Basis, make_poly, generate, generate_evaluator
 
 SRC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generated')

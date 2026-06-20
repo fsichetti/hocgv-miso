@@ -49,7 +49,7 @@ namespace miso {
 			default: throw std::logic_error("Undefined sampling function");
 		}
 	}
-	template<> std::array<P3TetCGV, P3TetCGV::schemes[0]> P3TetCGV::split<0>() const {
+	template<> std::array<P3TetCGV, P3TetCGV::schemes[0]> P3TetCGV::split_impl<0>() const {
 		auto _r_m0 = subdiv_0_3p6_1p3(m0);
 		auto _r_x0 = subdiv_0_3p1_1p1(x0);
 		auto _r_x1 = subdiv_0_3p1_1p1(x1);
@@ -170,7 +170,7 @@ namespace miso {
 			},
 		};
 	}
-	template<> std::array<P3TetCGV, P3TetCGV::schemes[1]> P3TetCGV::split<1>() const {
+	template<> std::array<P3TetCGV, P3TetCGV::schemes[1]> P3TetCGV::split_impl<1>() const {
 		auto _r_m0 = subdiv_1_3p6_1p3(m0);
 		auto _r_x0 = subdiv_1_3p1_1p1(x0);
 		auto _r_x1 = subdiv_1_3p1_1p1(x1);

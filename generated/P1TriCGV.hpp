@@ -47,7 +47,10 @@ namespace miso {
 
 		RealInterval inclusion(unsigned i) const;
 		RealVector<numVertices> sample(unsigned i) const;
-		template<unsigned SI=0> std::array<P1TriCGV, schemes[SI]> split() const;
+		template<typename F> void split(unsigned scheme, F &&f) const {
+			if (scheme == 1) { for (auto &&_c : split_impl<1>()) f(std::move(_c)); }
+			else { for (auto &&_c : split_impl<0>()) f(std::move(_c)); }
+		}
 		void inherit(const P1TriCGV &parent, unsigned q);
 		friend std::ostream &operator<<(std::ostream &out, const P1TriCGV &s);
 
@@ -71,8 +74,9 @@ namespace miso {
 		static std::array<RealVector<3>, 2> subdiv_1_1p2(const RealVector<3> &_b);
 		static std::array<RealVector<6>, 8> subdiv_0_2p1_1p1(const RealVector<6> &_b);
 		static std::array<RealVector<6>, 2> subdiv_1_2p1_1p1(const RealVector<6> &_b);
+		template<unsigned SI=0> std::array<P1TriCGV, schemes[SI]> split_impl() const;
 	};
 
-	template<> std::array<P1TriCGV, P1TriCGV::schemes[0]> P1TriCGV::split<0>() const;
-	template<> std::array<P1TriCGV, P1TriCGV::schemes[1]> P1TriCGV::split<1>() const;
+	template<> std::array<P1TriCGV, P1TriCGV::schemes[0]> P1TriCGV::split_impl<0>() const;
+	template<> std::array<P1TriCGV, P1TriCGV::schemes[1]> P1TriCGV::split_impl<1>() const;
 }

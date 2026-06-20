@@ -46,7 +46,9 @@ namespace miso {
 
 		RealInterval inclusion(unsigned i) const;
 		RealVector<numVertices> sample(unsigned i) const;
-		template<unsigned SI=0> std::array<P3TetVal, schemes[SI]> split() const;
+		template<typename F> void split(unsigned scheme, F &&f) const {
+			for (auto &&_c : split_impl<0>()) f(std::move(_c));
+		}
 		void inherit(const P3TetVal &parent, unsigned q);
 		friend std::ostream &operator<<(std::ostream &out, const P3TetVal &s);
 
@@ -68,7 +70,8 @@ namespace miso {
 		static RealVector<84> LB_3p6(const RealVector<84> &_l);
 		static std::array<RealVector<4>, 8> subdiv_0_3p1(const RealVector<4> &_b);
 		static std::array<RealVector<84>, 8> subdiv_0_3p6(const RealVector<84> &_b);
+		template<unsigned SI=0> std::array<P3TetVal, schemes[SI]> split_impl() const;
 	};
 
-	template<> std::array<P3TetVal, P3TetVal::schemes[0]> P3TetVal::split<0>() const;
+	template<> std::array<P3TetVal, P3TetVal::schemes[0]> P3TetVal::split_impl<0>() const;
 }

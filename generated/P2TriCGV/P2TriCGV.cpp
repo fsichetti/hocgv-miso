@@ -44,7 +44,7 @@ namespace miso {
 			default: throw std::logic_error("Undefined sampling function");
 		}
 	}
-	template<> std::array<P2TriCGV, P2TriCGV::schemes[0]> P2TriCGV::split<0>() const {
+	template<> std::array<P2TriCGV, P2TriCGV::schemes[0]> P2TriCGV::split_impl<0>() const {
 		auto _r_m0 = subdiv_0_2p2_1p2(m0);
 		auto _r_x0 = subdiv_0_2p1_1p1(x0);
 		auto _r_x1 = subdiv_0_2p1_1p1(x1);
@@ -100,7 +100,7 @@ namespace miso {
 			},
 		};
 	}
-	template<> std::array<P2TriCGV, P2TriCGV::schemes[1]> P2TriCGV::split<1>() const {
+	template<> std::array<P2TriCGV, P2TriCGV::schemes[1]> P2TriCGV::split_impl<1>() const {
 		auto _r_m0 = subdiv_1_2p2_1p2(m0);
 		auto _r_x0 = subdiv_1_2p1_1p1(x0);
 		auto _r_x1 = subdiv_1_2p1_1p1(x1);

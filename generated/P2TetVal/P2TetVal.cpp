@@ -41,7 +41,7 @@ namespace miso {
 			default: throw std::logic_error("Undefined sampling function");
 		}
 	}
-	template<> std::array<P2TetVal, P2TetVal::schemes[0]> P2TetVal::split<0>() const {
+	template<> std::array<P2TetVal, P2TetVal::schemes[0]> P2TetVal::split_impl<0>() const {
 		auto _r_m0 = subdiv_0_3p3(m0);
 		auto _r_x0 = subdiv_0_3p1(x0);
 		auto _r_x1 = subdiv_0_3p1(x1);

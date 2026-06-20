@@ -37,7 +37,7 @@ namespace miso {
 			default: throw std::logic_error("Undefined sampling function");
 		}
 	}
-	template<> std::array<P2TriVal, P2TriVal::schemes[0]> P2TriVal::split<0>() const {
+	template<> std::array<P2TriVal, P2TriVal::schemes[0]> P2TriVal::split_impl<0>() const {
 		auto _r_m0 = subdiv_0_2p2(m0);
 		auto _r_x0 = subdiv_0_2p1(x0);
 		auto _r_x1 = subdiv_0_2p1(x1);
