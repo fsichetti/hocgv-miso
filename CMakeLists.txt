@@ -10,3 +10,5 @@ target_include_directories(miso PUBLIC
     "${CMAKE_CURRENT_SOURCE_DIR}/generated"
     "${CMAKE_CURRENT_SOURCE_DIR}"
 )
+
+add_subdirectory(tests)
