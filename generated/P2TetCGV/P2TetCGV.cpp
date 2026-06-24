@@ -177,14 +177,14 @@ namespace miso {
 		auto _r_x2 = subdiv_1_3p1_1p1(x2);
 		auto _r_x3 = subdiv_1_3p1_1p1(x3);
 		return {
-			P2TetCGV{*this, 0,
+			P2TetCGV{*this, 16,
 				_r_m0[0], 
 				_r_x0[0], 
 				_r_x1[0], 
 				_r_x2[0], 
 				_r_x3[0]
 			},
-			P2TetCGV{*this, 1,
+			P2TetCGV{*this, 17,
 				_r_m0[1], 
 				_r_x0[1], 
 				_r_x1[1], 

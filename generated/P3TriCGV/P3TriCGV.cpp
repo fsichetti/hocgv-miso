@@ -106,13 +106,13 @@ namespace miso {
 		auto _r_x1 = subdiv_1_2p1_1p1(x1);
 		auto _r_x2 = subdiv_1_2p1_1p1(x2);
 		return {
-			P3TriCGV{*this, 0,
+			P3TriCGV{*this, 8,
 				_r_m0[0], 
 				_r_x0[0], 
 				_r_x1[0], 
 				_r_x2[0]
 			},
-			P3TriCGV{*this, 1,
+			P3TriCGV{*this, 9,
 				_r_m0[1], 
 				_r_x0[1], 
 				_r_x1[1], 
