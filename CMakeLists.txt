@@ -12,3 +12,5 @@ target_include_directories(miso PUBLIC
 )
 
 add_subdirectory(tests)
+add_executable(bin main.cpp)
+target_link_libraries(bin miso)
