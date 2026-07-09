@@ -100,6 +100,9 @@ int main()
 
     // ==================== Static validity (Val) ====================
     std::cout << "=== Static validity ===\n";
+    Parameters solve_params;
+    solve_params.constraintEpsilon = {0.0};
+    solve_params.findOne = true;
     {
         // P1 Triangle: JacEval should return positive determinant
         auto cp = make_cp(tri1);
@@ -109,19 +112,19 @@ int main()
     {
         // P2 Triangle
         auto cp = make_cp(tri2);
-        auto sols = solve(make_p2tri_val(cp, 0), {0.0}, 0, true);
+        auto sols = solve(make_p2tri_val(cp, 0), solve_params);
         check("P2 Tri static (valid)", sols.empty());
     }
     {
         // P3 Triangle
         auto cp = make_cp(tri3);
-        auto sols = solve(make_p3tri_val(cp, 0), {0.0}, 0, true);
+        auto sols = solve(make_p3tri_val(cp, 0), solve_params);
         check("P3 Tri static (valid)", sols.empty());
     }
     {
         // P4 Triangle
         auto cp = make_cp(tri4);
-        auto sols = solve(make_p4tri_val(cp, 0), {0.0}, 0, true);
+        auto sols = solve(make_p4tri_val(cp, 0), solve_params);
         check("P4 Tri static (valid)", sols.empty());
     }
     {
@@ -133,13 +136,13 @@ int main()
     {
         // P2 Tetrahedron
         auto cp = make_cp(tet2);
-        auto sols = solve(make_p2tet_val(cp, 0), {0.0}, 0, true);
+        auto sols = solve(make_p2tet_val(cp, 0), solve_params);
         check("P2 Tet static (valid)", sols.empty());
     }
     {
         // P3 Tetrahedron
         auto cp = make_cp(tet3);
-        auto sols = solve(make_p3tet_val(cp, 0), {0.0}, 0, true);
+        auto sols = solve(make_p3tet_val(cp, 0), solve_params);
         check("P3 Tet static (valid)", sols.empty());
     }
 
@@ -147,46 +150,49 @@ int main()
     // Apply a uniform translation (1, 1) for 2D, (1, 1, 1) for 3D.
     // A pure translation preserves validity, so minimize should return t_lo >= 1.
     std::cout << "\n=== Continuous validity (uniform translation) ===\n";
+    Parameters minimize_params;
+    minimize_params.targetPrecision = 1e-6;
+    minimize_params.constraintEpsilon = {0.0};
     {
         auto cp1 = make_cp(tri1);
         auto cp2 = make_translated(tri1, 1.0, 1.0);
-        auto result = minimize(make_p1tri_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p1tri_cgv(cp1, cp2, 0), minimize_params);
         check("P1 Tri CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
     {
         auto cp1 = make_cp(tri2);
         auto cp2 = make_translated(tri2, 1.0, 1.0);
-        auto result = minimize(make_p2tri_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p2tri_cgv(cp1, cp2, 0), minimize_params);
         check("P2 Tri CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
     {
         auto cp1 = make_cp(tri3);
         auto cp2 = make_translated(tri3, 1.0, 1.0);
-        auto result = minimize(make_p3tri_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p3tri_cgv(cp1, cp2, 0), minimize_params);
         check("P3 Tri CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
     {
         auto cp1 = make_cp(tri4);
         auto cp2 = make_translated(tri4, 1.0, 1.0);
-        auto result = minimize(make_p4tri_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p4tri_cgv(cp1, cp2, 0), minimize_params);
         check("P4 Tri CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
     {
         auto cp1 = make_cp(tet1);
         auto cp2 = make_translated(tet1, 1.0, 1.0, 1.0);
-        auto result = minimize(make_p1tet_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p1tet_cgv(cp1, cp2, 0), minimize_params);
         check("P1 Tet CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
     {
         auto cp1 = make_cp(tet2);
         auto cp2 = make_translated(tet2, 1.0, 1.0, 1.0);
-        auto result = minimize(make_p2tet_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p2tet_cgv(cp1, cp2, 0), minimize_params);
         check("P2 Tet CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
     {
         auto cp1 = make_cp(tet3);
         auto cp2 = make_translated(tet3, 1.0, 1.0, 1.0);
-        auto result = minimize(make_p3tet_cgv(cp1, cp2, 0), 1e-6, {0.0});
+        auto result = minimize(make_p3tet_cgv(cp1, cp2, 0), minimize_params);
         check("P3 Tet CGV (t_lo >= 1)", lower(result) >= 1.0);
     }
 
