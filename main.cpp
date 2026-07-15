@@ -1,6 +1,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <vector>
 
@@ -11,16 +12,36 @@
 
 using namespace miso;
 
-static std::vector<double> read_binary(const std::string &path) {
+static constexpr std::size_t element_size = 60;
+
+static std::vector<double> read_binary(const std::string &path, std::size_t element_id) {
     std::ifstream file(path, std::ios::binary);
     if (!file) {
         std::cerr << "Failed to open file: " << path << std::endl;
         std::exit(1);
     }
-    std::vector<double> data;
-    double value;
-    while (file.read(reinterpret_cast<char *>(&value), sizeof(double))) {
-        data.push_back(value);
+
+    file.seekg(0, std::ios::end);
+    const auto file_size = file.tellg();
+    const auto element_bytes = static_cast<std::streamoff>(element_size * sizeof(double));
+    if (file_size < 0 || file_size % element_bytes != 0) {
+        std::cerr << "File size is not a multiple of " << element_size
+                  << " doubles: " << path << std::endl;
+        std::exit(1);
+    }
+
+    const auto element_count = static_cast<std::size_t>(file_size / element_bytes);
+    if (element_id >= element_count) {
+        std::cerr << "element_id " << element_id << " is out of range for " << path
+                  << " (contains " << element_count << " elements)" << std::endl;
+        std::exit(1);
+    }
+
+    file.seekg(static_cast<std::streamoff>(element_id) * element_bytes, std::ios::beg);
+    std::vector<double> data(element_size);
+    if (!file.read(reinterpret_cast<char *>(data.data()), element_bytes)) {
+        std::cerr << "Failed to read element " << element_id << " from " << path << std::endl;
+        std::exit(1);
     }
     return data;
 }
@@ -134,25 +155,51 @@ static void run_val_interp(const std::vector<double> &data0, const std::vector<d
 
 int main(int argc, char **argv) {
 	Real::init();
-    if (argc < 2 || argc > 4) {
-        std::cerr << "Usage: " << argv[0] << " <file1.bin> [file2.bin [t]]" << std::endl;
+    std::size_t element_id = 0;
+    std::vector<std::string> args;
+    for (int i = 1; i < argc; ++i) {
+        const std::string arg = argv[i];
+        if (arg == "--element-id") {
+            if (++i >= argc) {
+                std::cerr << "Missing value after --element-id" << std::endl;
+                return 1;
+            }
+            try {
+                std::size_t parsed = 0;
+                const std::string value = argv[i];
+                element_id = std::stoull(value, &parsed);
+                if (parsed != value.size() || (!value.empty() && value.front() == '-'))
+                    throw std::invalid_argument("invalid element_id");
+            } catch (const std::exception &) {
+                std::cerr << "Invalid element_id: " << argv[i] << std::endl;
+                return 1;
+            }
+        } else {
+            args.push_back(arg);
+        }
+    }
+
+    if (args.empty() || args.size() > 3) {
+        std::cerr << "Usage: " << argv[0]
+                  << " <file1.bin> [file2.bin [t]] [--element-id N]" << std::endl;
         std::cerr << "  One file:        static validity check (P3TetVal)" << std::endl;
         std::cerr << "  Two files:       continuous geometric validity (P3TetCGV)" << std::endl;
         std::cerr << "  Two files + t:   static validity at interpolated config (P3TetVal)" << std::endl;
+        std::cerr << "  --element-id N:  read zero-based element N (60 doubles per element; default 0)" << std::endl;
         return 1;
     }
 
-    if (argc == 2) {
-        auto data = read_binary(argv[1]);
+    if (args.size() == 1) {
+        auto data = read_binary(args[0], element_id);
         run_val(data);
-    } else if (argc == 3) {
-        auto data0 = read_binary(argv[1]);
-        auto data1 = read_binary(argv[2]);
+    } else if (args.size() == 2) {
+        auto data0 = read_binary(args[0], element_id);
+        auto data1 = read_binary(args[1], element_id);
         run_cgv(data0, data1);
     } else {
-        double t = std::stod(argv[3]);
-        auto data0 = read_binary(argv[1]);
-        auto data1 = read_binary(argv[2]);
+        double t = std::stod(args[2]);
+        auto data0 = read_binary(args[0], element_id);
+        auto data1 = read_binary(args[1], element_id);
         run_val_interp(data0, data1, t);
     }
 

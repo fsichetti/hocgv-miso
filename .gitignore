@@ -1,3 +1,4 @@
 ignore/
 build/
 *.code-workspace
+data/

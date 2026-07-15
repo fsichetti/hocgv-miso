@@ -8,7 +8,9 @@ FetchContent_MakeAvailable(misolib)
 if(NOT TARGET miso)
     add_library(miso)
     add_library(miso::miso ALIAS miso)
-    target_compile_features(miso PRIVATE cxx_std_23)
+    # Consumers include miso's public headers, which expose dependencies that
+    # require a modern C++ language mode as well.
+    target_compile_features(miso PUBLIC cxx_std_23)
     target_link_libraries(miso PRIVATE misolib::misolib)
     target_include_directories(miso PUBLIC $<TARGET_PROPERTY:misolib::misolib,INTERFACE_INCLUDE_DIRECTORIES>)
 endif()
