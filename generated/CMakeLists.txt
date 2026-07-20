@@ -1,7 +1,7 @@
 include(FetchContent)
 FetchContent_Declare(misolib
     GIT_REPOSITORY https://gitlab.com/minimize-solve/misolib.git
-    GIT_TAG 00b22b0557147e2e0d40154fd8c9f370476b1ce7
+    GIT_TAG 1b597e36617a7de64fd1f4217f444477a9ab9b70
 )
 FetchContent_MakeAvailable(misolib)
 
