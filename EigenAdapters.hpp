@@ -28,11 +28,18 @@ namespace miso {
 // applying an optional index permutation for node reordering.
 // perm[i] = which source row (relative to offset) feeds miso slot i.
 template<int N>
-inline RealVector<N> rv(const Eigen::MatrixXd &m, int offset, int col, const int *perm = nullptr)
+inline RealVector<N> rv(const Eigen::MatrixXd &m, int offset, int col, const int *perm = nullptr, unsigned fatten_iter = 0)
 {
+	RealInterval::init();
 	RealVector<N> v;
 	for (int i = 0; i < N; ++i)
 		v[i] = m(offset + (perm ? perm[i] : i), col);
+	const RealInterval eps {-std::numeric_limits<double>::denorm_min(), std::numeric_limits<double>::denorm_min()};
+	for (int j = 0; j < fatten_iter; ++j) {
+		for (int i = 0; i < N; ++i) v[i] += eps;
+		std::cout << v << std::endl << std::endl;
+	}
+	RealInterval::deinit();
 	return v;
 }
 
@@ -66,27 +73,27 @@ inline P3TetVal make_p3tet_val(const Eigen::MatrixXd &cp, int o)
 // ---- CGV (continuous geometric validity) factories ----
 
 inline P1TriCGV make_p1tri_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<3>(cp1,o,0,tri1_perm), rv<3>(cp1,o,1,tri1_perm), rv<3>(cp2,o,0,tri1_perm), rv<3>(cp2,o,1,tri1_perm)}; }
+{ return {rv<3>(cp1,o,0,tri1_perm, 1), rv<3>(cp1,o,1,tri1_perm, 1), rv<3>(cp2,o,0,tri1_perm, 2), rv<3>(cp2,o,1,tri1_perm, 2)}; }
 
 inline P2TriCGV make_p2tri_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<6>(cp1,o,0,tri2_perm), rv<6>(cp1,o,1,tri2_perm), rv<6>(cp2,o,0,tri2_perm), rv<6>(cp2,o,1,tri2_perm)}; }
+{ return {rv<6>(cp1,o,0,tri2_perm, 1), rv<6>(cp1,o,1,tri2_perm, 1), rv<6>(cp2,o,0,tri2_perm, 2), rv<6>(cp2,o,1,tri2_perm, 2)}; }
 
 inline P3TriCGV make_p3tri_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<10>(cp1,o,0,tri3_perm), rv<10>(cp1,o,1,tri3_perm), rv<10>(cp2,o,0,tri3_perm), rv<10>(cp2,o,1,tri3_perm)}; }
+{ return {rv<10>(cp1,o,0,tri3_perm, 1), rv<10>(cp1,o,1,tri3_perm, 1), rv<10>(cp2,o,0,tri3_perm, 2), rv<10>(cp2,o,1,tri3_perm, 2)}; }
 
 inline P4TriCGV make_p4tri_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<15>(cp1,o,0,tri4_perm), rv<15>(cp1,o,1,tri4_perm), rv<15>(cp2,o,0,tri4_perm), rv<15>(cp2,o,1,tri4_perm)}; }
+{ return {rv<15>(cp1,o,0,tri4_perm, 1), rv<15>(cp1,o,1,tri4_perm, 1), rv<15>(cp2,o,0,tri4_perm, 2), rv<15>(cp2,o,1,tri4_perm, 2)}; }
 
 inline P1TetCGV make_p1tet_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<4>(cp1,o,0,tet1_perm), rv<4>(cp1,o,1,tet1_perm), rv<4>(cp1,o,2,tet1_perm),
-          rv<4>(cp2,o,0,tet1_perm), rv<4>(cp2,o,1,tet1_perm), rv<4>(cp2,o,2,tet1_perm)}; }
+{ return {rv<4>(cp1,o,0,tet1_perm, 1), rv<4>(cp1,o,1,tet1_perm, 1), rv<4>(cp1,o,2,tet1_perm, 1),
+          rv<4>(cp2,o,0,tet1_perm, 2), rv<4>(cp2,o,1,tet1_perm, 2), rv<4>(cp2,o,2,tet1_perm, 2)}; }
 
 inline P2TetCGV make_p2tet_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<10>(cp1,o,0,tet2_perm), rv<10>(cp1,o,1,tet2_perm), rv<10>(cp1,o,2,tet2_perm),
-          rv<10>(cp2,o,0,tet2_perm), rv<10>(cp2,o,1,tet2_perm), rv<10>(cp2,o,2,tet2_perm)}; }
+{ return {rv<10>(cp1,o,0,tet2_perm, 1), rv<10>(cp1,o,1,tet2_perm, 1), rv<10>(cp1,o,2,tet2_perm, 1),
+          rv<10>(cp2,o,0,tet2_perm, 2), rv<10>(cp2,o,1,tet2_perm, 2), rv<10>(cp2,o,2,tet2_perm, 2)}; }
 
 inline P3TetCGV make_p3tet_cgv(const Eigen::MatrixXd &cp1, const Eigen::MatrixXd &cp2, int o)
-{ return {rv<20>(cp1,o,0,tet3_perm), rv<20>(cp1,o,1,tet3_perm), rv<20>(cp1,o,2,tet3_perm),
-          rv<20>(cp2,o,0,tet3_perm), rv<20>(cp2,o,1,tet3_perm), rv<20>(cp2,o,2,tet3_perm)}; }
+{ return {rv<20>(cp1,o,0,tet3_perm, 1), rv<20>(cp1,o,1,tet3_perm, 1), rv<20>(cp1,o,2,tet3_perm, 1),
+          rv<20>(cp2,o,0,tet3_perm, 2), rv<20>(cp2,o,1,tet3_perm, 2), rv<20>(cp2,o,2,tet3_perm, 2)}; }
 
 } // namespace miso
