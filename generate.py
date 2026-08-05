@@ -17,14 +17,20 @@ import subprocess
 
 from sympy import Matrix, symbols
 
-# Clone pymiso from GitLab into ignore/pymiso if not already present
+# Clone pymiso from GitLab into ignore/pymiso if not already present, and keep
+# it on the branch this project needs.
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _PYMISO_DIR = os.path.join(_HERE, 'ignore', 'pymiso')
 _PYMISO_URL = 'https://gitlab.com/minimize-solve/pymiso.git'
+_PYMISO_BRANCH = 'degenerate-check'
 
 if not os.path.isdir(_PYMISO_DIR):
     os.makedirs(os.path.join(_HERE, 'ignore'), exist_ok=True)
-    subprocess.run(['git', 'clone', _PYMISO_URL, _PYMISO_DIR], check=True)
+    subprocess.run(['git', 'clone', '--branch', _PYMISO_BRANCH,
+                    _PYMISO_URL, _PYMISO_DIR], check=True)
+else:
+    subprocess.run(['git', '-C', _PYMISO_DIR, 'fetch', 'origin', _PYMISO_BRANCH], check=True)
+    subprocess.run(['git', '-C', _PYMISO_DIR, 'checkout', _PYMISO_BRANCH], check=True)
 
 sys.path.insert(0, _PYMISO_DIR)
 from miso import Domain, Basis, make_poly, generate, generate_evaluator
@@ -56,11 +62,20 @@ def SimplexChecks(D, P):
     generate_evaluator(SRC_DIR, f'JacEval_P{P}{simplex}', jd_val)
     print(f'JacEval_P{P}{simplex} done')
 
+    # Tets may have edge control points collapsed onto a corner, which makes
+    # det J vanish there to order equal to the number collapsed; order 2 covers
+    # the two-collapsed case. The caller selects the element and order at
+    # runtime via degenerateState, so a non-degenerate element is unaffected.
+    # Not applied to P=1: a linear map has no edge control points to collapse,
+    # and its det J is constant in the domain variables.
+    degenerate = 2 if (D == 3 and P > 1) else False
+
     # Call 1: static validity (SOLVE, no objective)
     # P=1: Jacobian of a linear map is constant in domain variables (degree 0);
     # miso's Bernstein converter requires degree >= 1.  Handled directly in C++.
     if P > 1:
-        generate(SRC_DIR, f'P{P}{simplex}Val', X, [jd_val], parallel=True)
+        generate(SRC_DIR, f'P{P}{simplex}Val', X, [jd_val], parallel=True,
+                 allow_degenerate=degenerate)
         print(f'P{P}{simplex}Val done')
 
     # CGV: blended map (1-t)*p0 + t*p1, space-time Jacobian determinant
@@ -73,8 +88,14 @@ def SimplexChecks(D, P):
     sd_t = domain.make_subdivision(T)
 
     # Call 2: continuous geometric validity (MINIMIZE, objective=t)
+    # The degenerate element becomes {corner} x [0,1] here: the collapse holds
+    # at both ends of a linear blend, so it holds at every time. Only spatial
+    # derivatives revive det J there, so the order is still measured in the
+    # three spatial directions.
     generate(SRC_DIR, f'P{P}{simplex}CGV', domain, [jd_cgv],
-             objective=t, subdivisions=[sd_all, sd_t], parallel=True)
+             objective=t, subdivisions=[sd_all, sd_t],
+             parallel=(2 if degenerate and P > 2 else True),
+             allow_degenerate=degenerate)
     print(f'P{P}{simplex}CGV done')
 
 
