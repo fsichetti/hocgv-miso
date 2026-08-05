@@ -11,7 +11,7 @@ include(CPM)
 CPMAddPackage(
     NAME eigen
     GITLAB_REPOSITORY libeigen/eigen
-    GIT_TAG 3.4.0
+    GIT_TAG 5.0.1
     DOWNLOAD_ONLY TRUE
 )
 
