@@ -21,12 +21,17 @@
 //
 // This walks all 12 "two edges collapsed at one corner" configurations of a
 // cubic tet: 4 vertices, each with 3 incident edges, C(3,2) = 3 ways to pick
-// 2 of them to collapse -- 4*3 = 12 cases. Every one still certifies as
-// valid (empty solution set), since the map is the identity everywhere else.
+// 2 of them to collapse -- 4*3 = 12 cases -- first as a static (Val) element,
+// then again as a continuous (CGV) element blended into a uniformly
+// translated copy of itself via make_p3tet_cgv_degenerate(). Every case
+// still certifies as valid: the static ones return an empty solution set,
+// and the continuous ones return t_lo >= 1, since a pure translation can
+// never make an already-valid map invalid.
 
 #include <iostream>
 #include "DegenerateHelpers.hpp"
 #include <algorithms/solve.hpp>
+#include <algorithms/minimize.hpp>
 
 using namespace miso;
 
@@ -51,9 +56,18 @@ int main()
         for (int j = 0; j < 3; ++j)
             cp(i, j) = tet3[i][j];
 
+    // A second copy translated by (1,1,1): pure translation preserves
+    // validity, so the CGV blend between the two should give t_lo >= 1.
+    Eigen::MatrixXd cp2 = cp;
+    cp2.array() += 1.0;
+
     Parameters solve_params;
     solve_params.constraintEpsilon = {0.0};
     solve_params.findOne = true;
+
+    Parameters cgv_params;
+    cgv_params.targetPrecision = 1e-6;
+    cgv_params.constraintEpsilon = {0.0};
 
     // Each vertex's 3 incident edges (its 3 fellow vertices), and the 3 ways
     // to pick 2 of them to collapse.
@@ -61,6 +75,8 @@ int main()
     static const int pairs[3][2] = {{0, 1}, {0, 2}, {1, 2}};
 
     int passed = 0, failed = 0;
+
+    std::cout << "=== Static validity (Val) ===\n";
     for (int v = 0; v < 4; ++v) {
         for (const auto &pr : pairs) {
             const int w0 = others[v][pr[0]], w1 = others[v][pr[1]];
@@ -68,6 +84,20 @@ int main()
             auto sols = solve(std::move(dom), solve_params);
 
             const bool ok = sols.empty();
+            std::cout << "  vertex " << v << ", edges to {" << w0 << "," << w1
+                       << "} collapsed: " << (ok ? "PASS" : "FAIL") << "\n";
+            ok ? ++passed : ++failed;
+        }
+    }
+
+    std::cout << "\n=== Continuous validity (CGV, t_lo >= 1) ===\n";
+    for (int v = 0; v < 4; ++v) {
+        for (const auto &pr : pairs) {
+            const int w0 = others[v][pr[0]], w1 = others[v][pr[1]];
+            auto dom = make_p3tet_cgv_degenerate(cp, cp2, 0, v, {w0, w1});
+            auto result = minimize(std::move(dom), cgv_params);
+
+            const bool ok = lower(result) >= 1.0;
             std::cout << "  vertex " << v << ", edges to {" << w0 << "," << w1
                        << "} collapsed: " << (ok ? "PASS" : "FAIL") << "\n";
             ok ? ++passed : ++failed;
