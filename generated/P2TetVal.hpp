@@ -12,6 +12,7 @@ namespace miso {
 		unsigned scheme = 0;
 		unsigned depth = 0;
 		std::shared_ptr<const SubdivHistory> history;
+		unsigned degenerateState = 0;
 
 		P2TetVal(
 			const RealVector<10> &px,
@@ -44,6 +45,12 @@ namespace miso {
 
 		static constexpr std::array<unsigned, 1> schemes = {8};
 
+		static constexpr unsigned numDegenerateStates = 29;
+		static unsigned degenerateStateFromVertices(unsigned vertexMask, unsigned order = 1);
+		static unsigned degenerateStateVertexMask(unsigned s);
+		static unsigned degenerateStateOrder(unsigned s);
+		static unsigned degenerateTransition(unsigned s, unsigned q);
+
 		RealInterval inclusion(unsigned i) const;
 		RealVector<numVertices> sample(unsigned i) const;
 		template<typename F> void split(unsigned scheme, F &&f) const {
@@ -70,6 +77,7 @@ namespace miso {
 		static RealVector<20> LB_3p3(const RealVector<20> &_l);
 		static std::array<RealVector<4>, 8> subdiv_0_3p1(const RealVector<4> &_b);
 		static std::array<RealVector<20>, 8> subdiv_0_3p3(const RealVector<20> &_b);
+		RealVector<20> degenerateZeroed_m0() const;
 		template<unsigned SI=0> std::array<P2TetVal, schemes[SI]> split_impl() const;
 	};
 

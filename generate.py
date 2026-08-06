@@ -52,7 +52,7 @@ def SimplexChecks(D, P):
     t = domain.variables[-1]  # T[0] may differ by identity from domain.variables
 
     # Compute the static Jacobian determinant (shared symbolic work)
-    x = X.poly_map(P, Basis.LAGRANGE, codomain_dim=D, name='p', output_miso_poly=False)
+    x = X.poly_map(P, Basis.BERNSTEIN, codomain_dim=D, name='p', output_miso_poly=False)
     Jx = x.jacobian(X.variables).applyfunc(make_poly)
     jd_val = make_poly(Jx.det())
 
@@ -79,8 +79,8 @@ def SimplexChecks(D, P):
         print(f'P{P}{simplex}Val done')
 
     # CGV: blended map (1-t)*p0 + t*p1, space-time Jacobian determinant
-    p0 = X.poly_map(P, Basis.LAGRANGE, codomain_dim=D, name='p0')
-    p1 = X.poly_map(P, Basis.LAGRANGE, codomain_dim=D, name='p1')
+    p0 = X.poly_map(P, Basis.BERNSTEIN, codomain_dim=D, name='p0')
+    p1 = X.poly_map(P, Basis.BERNSTEIN, codomain_dim=D, name='p1')
     p = [make_poly(a * (1 - t) + b * t) for a, b in zip(p0, p1)]
     p_ext = p + [t]  # plain symbol: avoids sympy Function canonicalization swapping t identity
     jd_cgv = make_poly(Matrix(p_ext).jacobian(domain.variables).applyfunc(make_poly).det())
