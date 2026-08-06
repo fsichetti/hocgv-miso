@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#include "EigenAdapters.hpp"
+#include "DegenerateHelpers.hpp"
 #include <algorithms/solve.hpp>
 #include <algorithms/minimize.hpp>
 
@@ -144,6 +144,51 @@ int main()
         auto cp = make_cp(tet3);
         auto sols = solve(make_p3tet_val(cp, 0), solve_params);
         check("P3 Tet static (valid)", sols.empty());
+    }
+
+    // ==================== Degenerate elements (cubic tet) ====================
+    // P3TetVal's det J can be certified positive everywhere except a chosen
+    // vertex where it is known, by construction, to vanish (RealVector's
+    // degenerate-inclusion machinery). make_p3tet_val_degenerate()/
+    // make_p3tet_cgv_degenerate() (DegenerateHelpers.hpp) take purely
+    // polyfem-side inputs -- vertex index, which other vertices' incident
+    // edges to collapse -- and handle the miso lattice ordering internally.
+    std::cout << "\n=== Degenerate elements (cubic tet) ===\n";
+    {
+        auto cp = make_cp(tet3);
+        {
+            // One collapsed edge control point (towards vertex 1): det J
+            // vanishes to first order at vertex 0 (one column of J zeroed
+            // there); order 1 excludes just the vertex coefficient.
+            auto dom = make_p3tet_val_degenerate(cp, 0, 0, {1});
+            auto sols = solve(std::move(dom), solve_params);
+            check("P3 Tet, one collapsed edge CP, order 1 (valid)", sols.empty());
+        }
+        {
+            // Two collapsed edge control points (towards vertices 1 and 2):
+            // det J vanishes to second order there, so the ring of
+            // coefficients neighboring the vertex is zero too -- order 1
+            // alone would leave the search self-similar under subdivision
+            // and never certify. Order 2 is exactly what allow_degenerate=2
+            // was generated for.
+            auto dom = make_p3tet_val_degenerate(cp, 0, 0, {1, 2});
+            auto sols = solve(std::move(dom), solve_params);
+            check("P3 Tet, two collapsed edge CPs, order 2 (valid)", sols.empty());
+        }
+        {
+            // Same two-collapsed geometry blended (via CGV) with a uniform
+            // translation of the whole tet: the collapse holds at both ends
+            // of the linear blend, so it holds at every t -- the vertex
+            // becomes an edge in time, still order 2 in the three spatial
+            // directions. Translation preserves validity, so t_lo >= 1.
+            auto cp2 = make_translated(tet3, 1.0, 1.0, 1.0);
+            auto dom = make_p3tet_cgv_degenerate(cp, cp2, 0, 0, {1, 2});
+            Parameters cgv_params;
+            cgv_params.targetPrecision = 1e-6;
+            cgv_params.constraintEpsilon = {0.0};
+            auto result = minimize(std::move(dom), cgv_params);
+            check("P3 Tet CGV, two collapsed edge CPs, order 2 (t_lo >= 1)", lower(result) >= 1.0);
+        }
     }
 
     // ==================== Continuous validity (CGV) ====================
