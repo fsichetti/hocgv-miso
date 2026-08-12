@@ -24,6 +24,12 @@
 
 namespace miso {
 
+inline void assertRoundingModeUp()
+{
+	assert(fegetround() == FE_UPWARD &&
+	       "FPU is not rounding up: call RealInterval::init() before solve()/minimize()");
+}
+
 // Extract N rows from column `col` of `m` starting at `offset`,
 // applying an optional index permutation for node reordering.
 // perm[i] = which source row (relative to offset) feeds miso slot i.

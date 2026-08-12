@@ -87,8 +87,11 @@ Eigen::MatrixXd make_translated(const double (&coords)[N][D], double dx, double 
 
 int main()
 {
+    RealInterval::init();
+
     int passed = 0, failed = 0;
     auto check = [&](const char *name, bool condition) {
+        assertRoundingModeUp();
         if (condition) {
             std::cout << "  PASS: " << name << "\n";
             ++passed;
@@ -242,5 +245,7 @@ int main()
     }
 
     std::cout << "\n" << passed << " passed, " << failed << " failed\n";
+
+    RealInterval::deinit();
     return failed > 0 ? 1 : 0;
 }

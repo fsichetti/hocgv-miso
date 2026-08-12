@@ -51,6 +51,8 @@ static const double tet3[20][3] = {
 
 int main()
 {
+    RealInterval::init();
+
     Eigen::MatrixXd cp(20, 3);
     for (int i = 0; i < 20; ++i)
         for (int j = 0; j < 3; ++j)
@@ -82,6 +84,7 @@ int main()
             const int w0 = others[v][pr[0]], w1 = others[v][pr[1]];
             auto dom = make_p3tet_val_degenerate(cp, 0, v, {w0, w1});
             auto sols = solve(std::move(dom), solve_params);
+            assertRoundingModeUp();
 
             const bool ok = sols.empty();
             std::cout << "  vertex " << v << ", edges to {" << w0 << "," << w1
@@ -96,6 +99,7 @@ int main()
             const int w0 = others[v][pr[0]], w1 = others[v][pr[1]];
             auto dom = make_p3tet_cgv_degenerate(cp, cp2, 0, v, {w0, w1});
             auto result = minimize(std::move(dom), cgv_params);
+            assertRoundingModeUp();
 
             const bool ok = lower(result) >= 1.0;
             std::cout << "  vertex " << v << ", edges to {" << w0 << "," << w1
@@ -105,5 +109,7 @@ int main()
     }
 
     std::cout << "\n" << passed << " passed, " << failed << " failed\n";
+
+    RealInterval::deinit();
     return failed > 0 ? 1 : 0;
 }
