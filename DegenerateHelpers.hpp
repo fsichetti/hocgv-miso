@@ -55,10 +55,7 @@ namespace detail {
 inline P2TetVal make_p2tet_val_degenerate(const Eigen::MatrixXd &cp, int offset, int vertex,
                                            std::initializer_list<int> collapseTowards)
 {
-	Eigen::MatrixXd ccp = cp;
-	for (int w : collapseTowards)
-		ccp.row(offset + detail::tet2NearEdgeCP[vertex][w]) = ccp.row(offset + vertex);
-	auto dom = make_p2tet_val(ccp, offset);
+	auto dom = make_p2tet_val(cp, offset);
 	dom.degenerateState = P2TetVal::degenerateStateFromVertices(
 		1u << detail::tetPolyfemVertexToDomain[vertex],
 		static_cast<unsigned>(collapseTowards.size()));
@@ -68,10 +65,7 @@ inline P2TetVal make_p2tet_val_degenerate(const Eigen::MatrixXd &cp, int offset,
 inline P3TetVal make_p3tet_val_degenerate(const Eigen::MatrixXd &cp, int offset, int vertex,
                                            std::initializer_list<int> collapseTowards)
 {
-	Eigen::MatrixXd ccp = cp;
-	for (int w : collapseTowards)
-		ccp.row(offset + detail::tet3NearEdgeCP[vertex][w]) = ccp.row(offset + vertex);
-	auto dom = make_p3tet_val(ccp, offset);
+	auto dom = make_p3tet_val(cp, offset);
 	dom.degenerateState = P3TetVal::degenerateStateFromVertices(
 		1u << detail::tetPolyfemVertexToDomain[vertex],
 		static_cast<unsigned>(collapseTowards.size()));
@@ -88,13 +82,7 @@ inline P2TetCGV make_p2tet_cgv_degenerate(const Eigen::MatrixXd &cp1, const Eige
                                            int offset, int vertex,
                                            std::initializer_list<int> collapseTowards)
 {
-	Eigen::MatrixXd ccp1 = cp1, ccp2 = cp2;
-	for (int w : collapseTowards) {
-		int row = detail::tet2NearEdgeCP[vertex][w];
-		ccp1.row(offset + row) = ccp1.row(offset + vertex);
-		ccp2.row(offset + row) = ccp2.row(offset + vertex);
-	}
-	auto dom = make_p2tet_cgv(ccp1, ccp2, offset);
+	auto dom = make_p2tet_cgv(cp1, cp2, offset);
 	const unsigned m = detail::tetPolyfemVertexToDomain[vertex];
 	dom.degenerateState = P2TetCGV::degenerateStateFromVertices(
 		(1u << (2 * m)) | (1u << (2 * m + 1)),
@@ -106,13 +94,7 @@ inline P3TetCGV make_p3tet_cgv_degenerate(const Eigen::MatrixXd &cp1, const Eige
                                            int offset, int vertex,
                                            std::initializer_list<int> collapseTowards)
 {
-	Eigen::MatrixXd ccp1 = cp1, ccp2 = cp2;
-	for (int w : collapseTowards) {
-		int row = detail::tet3NearEdgeCP[vertex][w];
-		ccp1.row(offset + row) = ccp1.row(offset + vertex);
-		ccp2.row(offset + row) = ccp2.row(offset + vertex);
-	}
-	auto dom = make_p3tet_cgv(ccp1, ccp2, offset);
+	auto dom = make_p3tet_cgv(cp1, cp2, offset);
 	const unsigned m = detail::tetPolyfemVertexToDomain[vertex];
 	dom.degenerateState = P3TetCGV::degenerateStateFromVertices(
 		(1u << (2 * m)) | (1u << (2 * m + 1)),
