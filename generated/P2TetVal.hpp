@@ -43,7 +43,7 @@ namespace miso {
 			};
 		}
 
-		static constexpr std::array<unsigned, 1> schemes = {8};
+		static constexpr std::array<unsigned, 2> schemes = {8, 20};
 
 		static constexpr unsigned numDegenerateStates = 29;
 		static unsigned degenerateStateFromVertices(unsigned vertexMask, unsigned order = 1);
@@ -54,7 +54,9 @@ namespace miso {
 		RealInterval inclusion(unsigned i) const;
 		RealVector<numVertices> sample(unsigned i) const;
 		template<typename F> void split(unsigned scheme, F &&f) const {
-			for (auto &&_c : split_impl<0>()) f(std::move(_c));
+			if (degenerateState != 0) scheme = 1;
+			if (scheme == 1) { for (auto &&_c : split_impl<1>()) f(std::move(_c)); }
+			else { for (auto &&_c : split_impl<0>()) f(std::move(_c)); }
 		}
 		void inherit(const P2TetVal &parent, unsigned q);
 		friend std::ostream &operator<<(std::ostream &out, const P2TetVal &s);
@@ -76,10 +78,13 @@ namespace miso {
 		static RealVector<20> CL_m0(const RealVector<10> &px, const RealVector<10> &py, const RealVector<10> &pz);
 		static RealVector<20> LB_3p3(const RealVector<20> &_l);
 		static std::array<RealVector<4>, 8> subdiv_0_3p1(const RealVector<4> &_b);
+		static std::array<RealVector<4>, 20> subdiv_1_3p1(const RealVector<4> &_b);
 		static std::array<RealVector<20>, 8> subdiv_0_3p3(const RealVector<20> &_b);
+		static std::array<RealVector<20>, 20> subdiv_1_3p3(const RealVector<20> &_b);
 		RealVector<20> degenerateZeroed_m0() const;
 		template<unsigned SI=0> std::array<P2TetVal, schemes[SI]> split_impl() const;
 	};
 
 	template<> std::array<P2TetVal, P2TetVal::schemes[0]> P2TetVal::split_impl<0>() const;
+	template<> std::array<P2TetVal, P2TetVal::schemes[1]> P2TetVal::split_impl<1>() const;
 }

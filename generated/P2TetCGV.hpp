@@ -48,7 +48,7 @@ namespace miso {
 			};
 		}
 
-		static constexpr std::array<unsigned, 2> schemes = {16, 2};
+		static constexpr std::array<unsigned, 3> schemes = {16, 2, 40};
 
 		static constexpr unsigned numDegenerateStates = 89;
 		static unsigned degenerateStateFromVertices(unsigned vertexMask, unsigned order = 1);
@@ -59,7 +59,9 @@ namespace miso {
 		RealInterval inclusion(unsigned i) const;
 		RealVector<numVertices> sample(unsigned i) const;
 		template<typename F> void split(unsigned scheme, F &&f) const {
-			if (scheme == 1) { for (auto &&_c : split_impl<1>()) f(std::move(_c)); }
+			if (degenerateState != 0) scheme = 2;
+			if (scheme == 2) { for (auto &&_c : split_impl<2>()) f(std::move(_c)); }
+			else if (scheme == 1) { for (auto &&_c : split_impl<1>()) f(std::move(_c)); }
 			else { for (auto &&_c : split_impl<0>()) f(std::move(_c)); }
 		}
 		void inherit(const P2TetCGV &parent, unsigned q);
@@ -83,14 +85,127 @@ namespace miso {
 
 		static RealVector<80> CL_m0(const RealVector<10> &p0x, const RealVector<10> &p0y, const RealVector<10> &p0z, const RealVector<10> &p1x, const RealVector<10> &p1y, const RealVector<10> &p1z);
 		static RealVector<80> LB_3p3_1p3(const RealVector<80> &_l);
-		static std::array<RealVector<8>, 16> subdiv_0_3p1_1p1(const RealVector<8> &_b);
-		static std::array<RealVector<8>, 2> subdiv_1_3p1_1p1(const RealVector<8> &_b);
-		static std::array<RealVector<80>, 16> subdiv_0_3p3_1p3(const RealVector<80> &_b);
-		static std::array<RealVector<80>, 2> subdiv_1_3p3_1p3(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_0(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_6(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_4(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_2(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_3(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_1(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_5(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_7(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_8(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_9(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_12(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_10(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_13(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_11(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_14(const RealVector<80> &_b);
+		static RealVector<80> subdiv_0_3p3_1p3_15(const RealVector<80> &_b);
+		static RealVector<80> subdiv_1_3p3_1p3_0(const RealVector<80> &_b);
+		static RealVector<80> subdiv_1_3p3_1p3_1(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_4(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_5(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_3(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_2(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_0(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_1(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_6(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_7(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_9(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_8(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_13(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_10(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_11(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_12(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_14(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_16(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_15(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_18(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_17(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_19(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_20(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_21(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_22(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_24(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_25(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_26(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_23(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_27(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_28(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_29(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_32(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_33(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_30(const RealVector<80> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_0(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_1(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_2(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_3(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_4(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_5(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_6(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_7(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_8(const RealVector<8> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_34(const RealVector<80> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_9(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_10(const RealVector<8> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_31(const RealVector<80> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_12(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_11(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_13(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_14(const RealVector<8> &_b);
+		static RealVector<8> subdiv_1_3p1_1p1_0(const RealVector<8> &_b);
+		static RealVector<8> subdiv_1_3p1_1p1_1(const RealVector<8> &_b);
+		static RealVector<8> subdiv_0_3p1_1p1_15(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_0(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_1(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_3(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_2(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_4(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_5(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_6(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_7(const RealVector<8> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_36(const RealVector<80> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_8(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_9(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_10(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_12(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_11(const RealVector<8> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_37(const RealVector<80> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_14(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_15(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_16(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_13(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_18(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_17(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_19(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_20(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_22(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_23(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_24(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_21(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_25(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_27(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_28(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_26(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_29(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_30(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_31(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_32(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_33(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_34(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_35(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_36(const RealVector<8> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_35(const RealVector<80> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_37(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_38(const RealVector<8> &_b);
+		static RealVector<8> subdiv_2_3p1_1p1_39(const RealVector<8> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_38(const RealVector<80> &_b);
+		static RealVector<80> subdiv_2_3p3_1p3_39(const RealVector<80> &_b);
 		RealVector<80> degenerateZeroed_m0() const;
 		template<unsigned SI=0> std::array<P2TetCGV, schemes[SI]> split_impl() const;
 	};
 
 	template<> std::array<P2TetCGV, P2TetCGV::schemes[0]> P2TetCGV::split_impl<0>() const;
 	template<> std::array<P2TetCGV, P2TetCGV::schemes[1]> P2TetCGV::split_impl<1>() const;
+	template<> std::array<P2TetCGV, P2TetCGV::schemes[2]> P2TetCGV::split_impl<2>() const;
 }

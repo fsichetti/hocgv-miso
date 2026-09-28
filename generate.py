@@ -33,7 +33,9 @@ else:
     subprocess.run(['git', '-C', _PYMISO_DIR, 'checkout', _PYMISO_BRANCH], check=True)
 
 sys.path.insert(0, _PYMISO_DIR)
-from miso import Domain, Basis, make_poly, generate, generate_evaluator
+from miso import (Domain, Basis, Subdivision, make_poly, generate, generate_evaluator,
+                  combine_subdiv, uniform_subdivision, corner_refined_subdivision)
+from itertools import product, starmap
 
 SRC_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'generated')
 
@@ -69,13 +71,15 @@ def SimplexChecks(D, P):
     # Not applied to P=1: a linear map has no edge control points to collapse,
     # and its det J is constant in the domain variables.
     degenerate = 2 if (D == 3 and P > 1) else False
+    # Split used on subdomains containing the degenerate corner.
+    sd_degen = corner_refined_subdivision(D) if degenerate else None
 
     # Call 1: static validity (SOLVE, no objective)
     # P=1: Jacobian of a linear map is constant in domain variables (degree 0);
     # miso's Bernstein converter requires degree >= 1.  Handled directly in C++.
     if P > 1:
         generate(SRC_DIR, f'P{P}{simplex}Val', X, [jd_val], parallel=True,
-                 allow_degenerate=degenerate)
+                 allow_degenerate=degenerate, degenerate_subdivision=sd_degen)
         print(f'P{P}{simplex}Val done')
 
     # CGV: blended map (1-t)*p0 + t*p1, space-time Jacobian determinant
@@ -92,10 +96,15 @@ def SimplexChecks(D, P):
     # at both ends of a linear blend, so it holds at every time. Only spatial
     # derivatives revive det J there, so the order is still measured in the
     # three spatial directions.
+    # Same split in space, bisecting time.
+    sd_degen_t = (Subdivision(*starmap(combine_subdiv, product(sd_degen, uniform_subdivision(1))))
+                  if degenerate else None)
     generate(SRC_DIR, f'P{P}{simplex}CGV', domain, [jd_cgv],
              objective=t, subdivisions=[sd_all, sd_t],
              parallel=(2 if degenerate and P > 2 else True),
-             allow_degenerate=degenerate)
+             allow_degenerate=degenerate, degenerate_subdivision=sd_degen_t,
+             # one file per child: the combined P3 split is too slow to compile
+             separate_subdivision=bool(degenerate))
     print(f'P{P}{simplex}CGV done')
 
 

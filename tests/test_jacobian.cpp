@@ -193,6 +193,28 @@ int main()
             check("P3 Tet CGV, two collapsed edge CPs, order 2 (t_lo >= 1)", lower(result) >= 1.0);
         }
     }
+    {
+        // Edges 0-1 and 0-2 collapsed onto vertex 0 (order 2), with a leading
+        // quadratic that has a negative mixed Bernstein coefficient there.
+        static const double tet2_q2neg[][3] = {
+            {0.0, 0.0, 0.0},
+            {0.6463195691202872, -0.358974358974359, -0.022123893805309734},
+            {0.193359375, 0.7662921348314606, 0.07639680729760548},
+            {-0.3115727002967359, 0.3189252336448598, 1.2988338192419826},
+            {0.0, 0.0, 0.0},
+            {0.849083215796897, 0.4112607099143207, -0.33390705679862304},
+            {0.0, 0.0, 0.0},
+            {0.2540272614622057, -0.046890927624872576, 0.37959667852906287},
+            {0.44190871369294604, 0.1673469387755102, 0.682454251883746},
+            {-0.0513347022587269, 0.31322751322751324, 0.22068230277185502},
+        };
+        Parameters params = solve_params;
+        params.maxIter = 20000;
+        Info info;
+        auto sols = solve(make_p2tet_val_degenerate(make_cp(tet2_q2neg), 0, 0, {1, 2}), params, &info);
+        check("P2 Tet, order 2 with negative mixed leading coefficient (certifies)",
+              sols.empty() && info.status == Info::Status::completed);
+    }
 
     // ==================== Continuous validity (CGV) ====================
     // Apply a uniform translation (1, 1) for 2D, (1, 1, 1) for 3D.
