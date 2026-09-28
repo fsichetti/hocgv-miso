@@ -1,7 +1,7 @@
 include(FetchContent)
 FetchContent_Declare(misolib
     GIT_REPOSITORY https://gitlab.com/minimize-solve/misolib.git
-    GIT_TAG degenerate-check
+    GIT_TAG scheme-selector
 )
 FetchContent_MakeAvailable(misolib)
 

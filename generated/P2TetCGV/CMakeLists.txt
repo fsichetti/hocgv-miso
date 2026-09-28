@@ -2,56 +2,56 @@ set(SOURCES
 	CL_m0.cpp
 	LB_3p3_1p3.cpp
 	subdiv_0_3p3_1p3_0.cpp
-	subdiv_0_3p3_1p3_6.cpp
 	subdiv_0_3p3_1p3_4.cpp
-	subdiv_0_3p3_1p3_2.cpp
-	subdiv_0_3p3_1p3_3.cpp
-	subdiv_0_3p3_1p3_1.cpp
-	subdiv_0_3p3_1p3_5.cpp
 	subdiv_0_3p3_1p3_7.cpp
-	subdiv_0_3p3_1p3_8.cpp
+	subdiv_0_3p3_1p3_6.cpp
+	subdiv_0_3p3_1p3_1.cpp
+	subdiv_0_3p3_1p3_2.cpp
+	subdiv_0_3p3_1p3_5.cpp
+	subdiv_0_3p3_1p3_3.cpp
 	subdiv_0_3p3_1p3_9.cpp
-	subdiv_0_3p3_1p3_12.cpp
+	subdiv_0_3p3_1p3_8.cpp
 	subdiv_0_3p3_1p3_10.cpp
-	subdiv_0_3p3_1p3_13.cpp
 	subdiv_0_3p3_1p3_11.cpp
-	subdiv_0_3p3_1p3_14.cpp
+	subdiv_0_3p3_1p3_13.cpp
+	subdiv_0_3p3_1p3_12.cpp
 	subdiv_0_3p3_1p3_15.cpp
+	subdiv_0_3p3_1p3_14.cpp
 	subdiv_1_3p3_1p3_0.cpp
 	subdiv_1_3p3_1p3_1.cpp
+	subdiv_2_3p3_1p3_2.cpp
 	subdiv_2_3p3_1p3_4.cpp
 	subdiv_2_3p3_1p3_5.cpp
 	subdiv_2_3p3_1p3_3.cpp
-	subdiv_2_3p3_1p3_2.cpp
-	subdiv_2_3p3_1p3_0.cpp
 	subdiv_2_3p3_1p3_1.cpp
+	subdiv_2_3p3_1p3_0.cpp
 	subdiv_2_3p3_1p3_6.cpp
 	subdiv_2_3p3_1p3_7.cpp
-	subdiv_2_3p3_1p3_9.cpp
 	subdiv_2_3p3_1p3_8.cpp
-	subdiv_2_3p3_1p3_13.cpp
+	subdiv_2_3p3_1p3_9.cpp
 	subdiv_2_3p3_1p3_10.cpp
 	subdiv_2_3p3_1p3_11.cpp
+	subdiv_2_3p3_1p3_13.cpp
 	subdiv_2_3p3_1p3_12.cpp
-	subdiv_2_3p3_1p3_14.cpp
 	subdiv_2_3p3_1p3_16.cpp
+	subdiv_2_3p3_1p3_14.cpp
+	subdiv_2_3p3_1p3_17.cpp
 	subdiv_2_3p3_1p3_15.cpp
 	subdiv_2_3p3_1p3_18.cpp
-	subdiv_2_3p3_1p3_17.cpp
-	subdiv_2_3p3_1p3_19.cpp
 	subdiv_2_3p3_1p3_20.cpp
 	subdiv_2_3p3_1p3_21.cpp
-	subdiv_2_3p3_1p3_22.cpp
+	subdiv_2_3p3_1p3_19.cpp
 	subdiv_2_3p3_1p3_24.cpp
 	subdiv_2_3p3_1p3_25.cpp
-	subdiv_2_3p3_1p3_26.cpp
 	subdiv_2_3p3_1p3_23.cpp
-	subdiv_2_3p3_1p3_27.cpp
+	subdiv_2_3p3_1p3_22.cpp
 	subdiv_2_3p3_1p3_28.cpp
+	subdiv_2_3p3_1p3_26.cpp
+	subdiv_2_3p3_1p3_27.cpp
 	subdiv_2_3p3_1p3_29.cpp
 	subdiv_2_3p3_1p3_32.cpp
-	subdiv_2_3p3_1p3_33.cpp
 	subdiv_2_3p3_1p3_30.cpp
+	subdiv_2_3p3_1p3_33.cpp
 	subdiv_0_3p1_1p1_0.cpp
 	subdiv_0_3p1_1p1_1.cpp
 	subdiv_0_3p1_1p1_2.cpp
@@ -63,58 +63,58 @@ set(SOURCES
 	subdiv_0_3p1_1p1_8.cpp
 	subdiv_2_3p3_1p3_34.cpp
 	subdiv_0_3p1_1p1_9.cpp
-	subdiv_0_3p1_1p1_10.cpp
-	subdiv_2_3p3_1p3_31.cpp
-	subdiv_0_3p1_1p1_12.cpp
 	subdiv_0_3p1_1p1_11.cpp
-	subdiv_0_3p1_1p1_13.cpp
+	subdiv_0_3p1_1p1_10.cpp
+	subdiv_0_3p1_1p1_12.cpp
 	subdiv_0_3p1_1p1_14.cpp
+	subdiv_0_3p1_1p1_13.cpp
+	subdiv_0_3p1_1p1_15.cpp
 	subdiv_1_3p1_1p1_0.cpp
 	subdiv_1_3p1_1p1_1.cpp
-	subdiv_0_3p1_1p1_15.cpp
 	subdiv_2_3p1_1p1_0.cpp
+	subdiv_2_3p3_1p3_31.cpp
 	subdiv_2_3p1_1p1_1.cpp
-	subdiv_2_3p1_1p1_3.cpp
 	subdiv_2_3p1_1p1_2.cpp
 	subdiv_2_3p1_1p1_4.cpp
 	subdiv_2_3p1_1p1_5.cpp
 	subdiv_2_3p1_1p1_6.cpp
 	subdiv_2_3p1_1p1_7.cpp
-	subdiv_2_3p3_1p3_36.cpp
+	subdiv_2_3p1_1p1_3.cpp
 	subdiv_2_3p1_1p1_8.cpp
 	subdiv_2_3p1_1p1_9.cpp
 	subdiv_2_3p1_1p1_10.cpp
-	subdiv_2_3p1_1p1_12.cpp
 	subdiv_2_3p1_1p1_11.cpp
-	subdiv_2_3p3_1p3_37.cpp
+	subdiv_2_3p1_1p1_12.cpp
+	subdiv_2_3p1_1p1_13.cpp
 	subdiv_2_3p1_1p1_14.cpp
 	subdiv_2_3p1_1p1_15.cpp
 	subdiv_2_3p1_1p1_16.cpp
-	subdiv_2_3p1_1p1_13.cpp
-	subdiv_2_3p1_1p1_18.cpp
+	subdiv_2_3p3_1p3_37.cpp
+	subdiv_2_3p3_1p3_35.cpp
 	subdiv_2_3p1_1p1_17.cpp
-	subdiv_2_3p1_1p1_19.cpp
+	subdiv_2_3p1_1p1_18.cpp
 	subdiv_2_3p1_1p1_20.cpp
 	subdiv_2_3p1_1p1_22.cpp
 	subdiv_2_3p1_1p1_23.cpp
-	subdiv_2_3p1_1p1_24.cpp
 	subdiv_2_3p1_1p1_21.cpp
+	subdiv_2_3p1_1p1_19.cpp
+	subdiv_2_3p3_1p3_36.cpp
+	subdiv_2_3p1_1p1_24.cpp
 	subdiv_2_3p1_1p1_25.cpp
-	subdiv_2_3p1_1p1_27.cpp
-	subdiv_2_3p1_1p1_28.cpp
 	subdiv_2_3p1_1p1_26.cpp
-	subdiv_2_3p1_1p1_29.cpp
+	subdiv_2_3p1_1p1_27.cpp
 	subdiv_2_3p1_1p1_30.cpp
 	subdiv_2_3p1_1p1_31.cpp
 	subdiv_2_3p1_1p1_32.cpp
+	subdiv_2_3p1_1p1_29.cpp
 	subdiv_2_3p1_1p1_33.cpp
+	subdiv_2_3p1_1p1_28.cpp
 	subdiv_2_3p1_1p1_34.cpp
 	subdiv_2_3p1_1p1_35.cpp
 	subdiv_2_3p1_1p1_36.cpp
-	subdiv_2_3p3_1p3_35.cpp
-	subdiv_2_3p1_1p1_37.cpp
 	subdiv_2_3p1_1p1_38.cpp
 	subdiv_2_3p1_1p1_39.cpp
+	subdiv_2_3p1_1p1_37.cpp
 	subdiv_2_3p3_1p3_38.cpp
 	subdiv_2_3p3_1p3_39.cpp
 	P2TetCGV.cpp

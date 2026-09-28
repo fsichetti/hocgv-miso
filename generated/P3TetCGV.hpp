@@ -1,6 +1,7 @@
 #pragma once
 #include "core/RealVector.hpp"
 #include "core/SubdivHistory.hpp"
+#include "core/SchemeSelector.hpp"
 
 namespace miso {
 	class P3TetCGV {
@@ -9,8 +10,8 @@ namespace miso {
 		static constexpr unsigned numVertices = 8;
 		static constexpr unsigned numConstraints = 1;
 		static constexpr bool hasObjective = true;
-		unsigned scheme = 0;
 		unsigned depth = 0;
+		SplitContext splitContext;
 		std::shared_ptr<const SubdivHistory> history;
 		unsigned degenerateState = 0;
 
@@ -24,11 +25,6 @@ namespace miso {
 		);
 
 		P3TetCGV() = default;
-
-		unsigned schemeSize() const {
-			auto s = (scheme < schemes.size()) ? scheme : 0;
-			return schemes.at(s);
-		}
 
 		const Real width() const {
 			return std::max({

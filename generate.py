@@ -22,7 +22,7 @@ from sympy import Matrix, symbols
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _PYMISO_DIR = os.path.join(_HERE, 'ignore', 'pymiso')
 _PYMISO_URL = 'https://gitlab.com/minimize-solve/pymiso.git'
-_PYMISO_BRANCH = 'degenerate-check'
+_PYMISO_BRANCH = 'scheme-selector'
 
 if not os.path.isdir(_PYMISO_DIR):
     os.makedirs(os.path.join(_HERE, 'ignore'), exist_ok=True)

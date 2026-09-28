@@ -1,6 +1,7 @@
 #pragma once
 #include "core/RealVector.hpp"
 #include "core/SubdivHistory.hpp"
+#include "core/SchemeSelector.hpp"
 
 namespace miso {
 	class P2TriVal {
@@ -9,8 +10,8 @@ namespace miso {
 		static constexpr unsigned numVertices = 3;
 		static constexpr unsigned numConstraints = 1;
 		static constexpr bool hasObjective = false;
-		unsigned scheme = 0;
 		unsigned depth = 0;
+		SplitContext splitContext;
 		std::shared_ptr<const SubdivHistory> history;
 
 		P2TriVal(
@@ -19,11 +20,6 @@ namespace miso {
 		);
 
 		P2TriVal() = default;
-
-		unsigned schemeSize() const {
-			auto s = (scheme < schemes.size()) ? scheme : 0;
-			return schemes.at(s);
-		}
 
 		const Real width() const {
 			return std::max({
