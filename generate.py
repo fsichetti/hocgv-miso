@@ -108,6 +108,35 @@ def SimplexChecks(D, P):
     print(f'P{P}{simplex}CGV done')
 
 
+def RationalChecks(P, orders=(1, 2)):
+    """
+    Tet validity classes for det J / L^Z, where L = x0 + x1 + x2 vanishes on the
+    domain only at the corner x = 0 (polyfem vertex 0). For det J vanishing there
+    to order Z, the rational inclusion certifies det J > 0 everywhere else.
+    """
+    X = Domain('x0 x1 x2')
+    T = Domain('t')
+    domain = X * T
+    t = domain.variables[-1]
+    L = sum(X.variables)
+    Ls = sum(domain.variables[:3])
+
+    x = X.poly_map(P, Basis.BERNSTEIN, codomain_dim=3, name='p', output_miso_poly=False)
+    jd_val = make_poly(x.jacobian(X.variables).applyfunc(make_poly).det())
+    for Z in orders:
+        generate(SRC_DIR, f'P{P}TetValR{Z}', X, [jd_val / make_poly(L**Z)], parallel=True)
+        print(f'P{P}TetValR{Z} done')
+
+    p0 = X.poly_map(P, Basis.BERNSTEIN, codomain_dim=3, name='p0')
+    p1 = X.poly_map(P, Basis.BERNSTEIN, codomain_dim=3, name='p1')
+    p = [make_poly(a * (1 - t) + b * t) for a, b in zip(p0, p1)] + [t]
+    jd_cgv = make_poly(Matrix(p).jacobian(domain.variables).applyfunc(make_poly).det())
+    for Z in orders:
+        generate(SRC_DIR, f'P{P}TetCGVR{Z}', domain, [jd_cgv / make_poly(Ls**Z)], objective=t,
+                 subdivisions=[domain.default_subdivision, domain.make_subdivision(T)], parallel=True)
+        print(f'P{P}TetCGVR{Z} done')
+
+
 if __name__ == '__main__':
     os.makedirs(SRC_DIR, exist_ok=True)
     # Clear existing class subdirectories; keep top-level CMakeLists.txt / include.hpp
